@@ -149,9 +149,11 @@ class Runner(object):
             temp_ctx = CTX()
             temp_function_ctx = FunctionCTX()
 
+            args = self.expr_args(statement.args, ctx, function_ctx)
+
             for key, value in zip(
                 function_statement.args,
-                self.expr_args(statement.args, ctx, function_ctx),
+                args,
             ):
                 temp_ctx[key] = value
 
