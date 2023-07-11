@@ -40,7 +40,7 @@ CODE = Module(
                 "Type 2 for subtract.",
                 "\n",
                 "Type 3 for multiply.",
-                "\n d",
+                "\n",
                 "Type 4 for divide.",
             ],
         ),
@@ -49,12 +49,20 @@ CODE = Module(
         VarAssignment("a", Call("toint", [Call("input", ["Num a:"])])),
         VarAssignment("b", Call("toint", [Call("input", ["Num b:"])])),
         IfStatement(
-            [Compare(Var("in"), "1", EQ), Compare(Var("in"), "2", EQ)],
+            [
+                Compare(Var("in"), "1", EQ),
+                Compare(Var("in"), "2", EQ),
+                Compare(Var("in"), "3", EQ),
+                Compare(Var("in"), "4", EQ),
+            ],
             [
                 [VarAssignment("result", Call("plus", [Var("a"), Var("b")]))],
-                [Call("print", ["2"])],
+                [VarAssignment("result", Call("subtract", [Var("a"), Var("b")]))],
+                [VarAssignment("result", Call("multiply", [Var("a"), Var("b")]))],
+                [VarAssignment("result", Call("divide", [Var("a"), Var("b")]))],
                 [Call("print", ["Invalid number!"])],
             ],
         ),
+        Call("print", ["Result:", Var("result")]),
     ]
 )
