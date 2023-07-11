@@ -1,15 +1,31 @@
 import copy
-from define_type import *
+from boat.type import *
 from lib_runner import CTX, FunctionCTX, debug_message
 
 
 class Module(object):
+    """
+    AST root node.
+    """
+
     def __init__(self, body: list):
+        """
+        Args:
+            body:list statements.
+        """
         self.body = body
 
 
 class FunctionDef(object):
     def __init__(self, name: str, args: list, args_type: list, body: list):
+        """
+        Define a function.
+        Args:
+            name:str Function name
+            args:list The args name list.
+            args_type:list The args type list.
+            body:list Function body.
+        """
         self.name = name
         self.args_type = args_type
         self.args = args

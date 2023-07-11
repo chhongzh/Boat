@@ -1,14 +1,14 @@
 """
-Cave AST Runner
+Boat AST Runner
 
 Copyright 2023 chhongzh
 
 MIT Licence
 """
 
-from define_type import BUILTINS
+from boat.type import BUILTINS
 from test import CODE
-from define_statement import *
+from boat.statement import *
 from lib_runner import *
 from stdlib.builtin import _print, _input
 from copy import deepcopy
@@ -21,7 +21,7 @@ class Runner(object):
 
     def __init__(self, module: Module):
         """
-        A runner for Cave.
+        A runner for Boat.
         Args:
             module:Module AST node root.
         """
@@ -34,7 +34,7 @@ class Runner(object):
         """
         Run some statements.
         Args:
-            statements To run
+            statements to run
         """
 
         for statement in statements:
