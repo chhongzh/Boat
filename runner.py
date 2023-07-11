@@ -3,15 +3,13 @@ Boat AST Runner
 
 Copyright 2023 chhongzh
 
-MIT Licence
+MIT License
 """
 
 from boat.type import BUILTINS
-from test import CODE
 from boat.statement import *
 from lib_runner import *
 from stdlib.builtin import _print, _input
-from copy import deepcopy
 
 
 class Runner(object):
@@ -137,5 +135,7 @@ class Runner(object):
 
 
 if __name__ == "__main__":
+    from test import CODE
+
     r = Runner(CODE)
     r.run()
