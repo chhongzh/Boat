@@ -1,6 +1,6 @@
 import copy
 from boat.type import *
-from lib_runner import CTX, FunctionCTX, debug_message
+from boat.lib_runner import CTX, FunctionCTX, debug_message
 
 
 class Module(object):
@@ -49,12 +49,6 @@ class Var(object):
         self.var = var
 
 
-class IfStatement(object):
-    def __init__(self, tests: list, bodys: list):
-        self.tests = tests
-        self.bodys = bodys
-
-
 class Compare(object):
     def __init__(self, a, b, op):
         self.a = a
@@ -90,6 +84,12 @@ class Call(object):
         self.args = args
 
 
+class IfStatement(object):
+    def __init__(self, tests: list[Compare], bodys: list[list]):
+        self.tests = tests
+        self.bodys = bodys
+
+
 class ReturnStatement(object):
     def __init__(self, val):
         self.val = val
@@ -111,14 +111,16 @@ class BinOp(object):
         left = copy.deepcopy(self.left)
         right = copy.deepcopy(self.right)
         if isinstance(self.left, BinOp):
-            left = self.left.calc()
+            left = left.calc()
         if isinstance(self.right, BinOp):
-            right = self.right.calc()
+            right = right.calc()
 
-        debug_message("BinOp计算", "Left", left, "Right", right)
+        # debug_message("BinOp计算", "Left", left, "Right", right)
 
         left = expr_method(left, ctx, function_ctx)
         right = expr_method(right, ctx, function_ctx)
+
+        # debug_message("BinOp计算", "Left", left, "Right", right)
 
         if self.op == PLUS:
             return left + right

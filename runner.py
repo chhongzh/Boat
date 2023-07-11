@@ -8,8 +8,8 @@ MIT License
 
 from boat.type import BUILTINS
 from boat.statement import *
-from lib_runner import *
-from stdlib.builtin import _print, _input
+from boat.lib_runner import *
+from stdlib.builtin import _print, _input, _toint
 
 
 class Runner(object):
@@ -44,7 +44,7 @@ class Runner(object):
                         statement.body, ctx, function_ctx
                     )  # Run WhileStatement body.
             elif isinstance(statement, VarAssignment):
-                self.expr_assignment(statement, ctx, function_ctx)
+                ctx[statement.name] = self.expr_assignment(statement, ctx, function_ctx)
             elif isinstance(statement, VarDef):
                 if ctx.is_it_in(statement.name):
                     error_message(f'Var "{statement.name}" have been define.')
@@ -59,6 +59,8 @@ class Runner(object):
                 return self.expr_compare(
                     statement, ctx, function_ctx
                 )  # Return the result to the top.
+            elif isinstance(statement, IfStatement):
+                self.expr_if(statement, ctx, function_ctx)
 
         return None  # For the non return function
 
@@ -87,6 +89,26 @@ class Runner(object):
         else:
             return statement
 
+    def expr_if(self, statement: IfStatement, ctx: CTX, function_ctx: FunctionCTX):
+        tests = statement.tests
+        bodys = statement.bodys
+
+        if len(tests) > len(bodys):
+            error_message("Test count bigger than Body count.")
+
+        if len(tests) + 1 == len(bodys):  # if ..elif else:
+            for test, body in zip(tests, bodys[:-1]):
+                if self.expr(test, ctx, function_ctx):
+                    self.run_statements(body, ctx, function_ctx)
+                    break
+            else:
+                self.run_statements(bodys[-1], ctx, function_ctx)
+        else:  # if ..elif
+            for test, body in zip(tests[:-1], bodys[:-1]):
+                if self.expr(test, ctx, function_ctx):
+                    self.run_statements(body, ctx, function_ctx)
+                    break
+
     def expr_assignment(
         self, statement: VarAssignment, ctx: CTX, function_ctx: FunctionCTX
     ):
@@ -94,7 +116,8 @@ class Runner(object):
             error_message(f'Var "{statement.name}" not define.')
         else:
             val = self.expr(statement.var, ctx, function_ctx)
-            ctx.setitem(statement.name, val)
+            # ctx.setitem(statement.name, val)
+            return val
 
     def expr_compare(self, compare: Compare, ctx: CTX, function_ctx: FunctionCTX):
         return compare.compare(ctx, function_ctx, self.expr)
@@ -114,6 +137,8 @@ class Runner(object):
                 return _input(
                     *self.expr_args(statement.args, ctx, function_ctx)
                 )  # Hook for the built in functions
+            elif statement.name == "toint":
+                return _toint(*self.expr_args(statement.args, ctx, function_ctx))
         elif function_ctx.is_it_in(statement.name):  # Check the function in the define.
             statement: Call
             function_ctx: list[FunctionDef]
@@ -124,7 +149,10 @@ class Runner(object):
             temp_ctx = CTX()
             temp_function_ctx = FunctionCTX()
 
-            for key, value in zip(function_statement.args, statement.args):
+            for key, value in zip(
+                function_statement.args,
+                self.expr_args(statement.args, ctx, function_ctx),
+            ):
                 temp_ctx[key] = value
 
             return self.run_statements(
