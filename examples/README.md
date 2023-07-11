@@ -1,3 +1,3 @@
 # Examples
 **Q**:How to run the examples?
-**A**:Run the file `runit.py`.
+**A**:Run the file `launcher.py`.
