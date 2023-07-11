@@ -1,4 +1,4 @@
-from define_statement import (
+from boat.statement import (
     BinOp,
     Call,
     FunctionDef,
@@ -9,9 +9,22 @@ from define_statement import (
     VarDef,
     Compare,
     WhileStatement,
+    IfStatement,
 )
-from define_type import NE, PLUS, ObjInt, ObjStr, EQ, ObjFloat, SUBTRACT, GT, LE
+from boat.type import (
+    NE,
+    PLUS,
+    ObjInt,
+    ObjStr,
+    EQ,
+    ObjFloat,
+    SUBTRACT,
+    GT,
+    LE,
+    MULTIPLY,
+    DIVIDE,
+)
 
 
 # Example "Hello World!"
-CODE = Module([Call("print", ["Hello World"])])
+CODE = Module([Call("print", ["Running on Boat AST!"])])
