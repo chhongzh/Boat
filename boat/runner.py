@@ -37,33 +37,7 @@ class Runner(object):
         """
 
         for statement in statements:
-            if isinstance(statement, FunctionDef):
-                function_ctx.new_function(statement)  # Add the function to the context.
-            elif isinstance(statement, WhileStatement):
-                while self.expr(statement.test, ctx, function_ctx):
-                    self.run_statements(
-                        statement.body, ctx, function_ctx
-                    )  # Run WhileStatement body.
-            elif isinstance(statement, VarAssignment):
-                ctx[statement.name] = self.expr_assignment(statement, ctx, function_ctx)
-            elif isinstance(statement, VarDef):
-                if ctx.is_it_in(statement.name):
-                    error_message(f'Var "{statement.name}" have been define.')
-                ctx[statement.name] = None  # Create the new variable
-            elif isinstance(statement, Call):
-                self.expr_call(statement, ctx, function_ctx)  # Call the functions.
-            elif isinstance(statement, ReturnStatement):
-                return self.expr(
-                    statement.val, ctx, function_ctx
-                )  # Return it to the top.
-            elif isinstance(statement, Compare):
-                return self.expr_compare(
-                    statement, ctx, function_ctx
-                )  # Return the result to the top.
-            elif isinstance(statement, IfStatement):
-                self.expr_if(statement, ctx, function_ctx)
-            elif isinstance(statement, RaiseStatement):
-                self.expr_raise(statement, ctx, function_ctx)
+            self.run_statement(statement, ctx, function_ctx)
 
         return None  # For the non return function
 
@@ -130,6 +104,33 @@ class Runner(object):
             val = self.expr(statement.var, ctx, function_ctx)
             # ctx.setitem(statement.name, val)
             return val
+
+    def run_statement(self, statement, ctx: CTX, function_ctx: FunctionCTX):
+        if isinstance(statement, FunctionDef):
+            function_ctx.new_function(statement)  # Add the function to the context.
+        elif isinstance(statement, WhileStatement):
+            while self.expr(statement.test, ctx, function_ctx):
+                self.run_statements(
+                    statement.body, ctx, function_ctx
+                )  # Run WhileStatement body.
+        elif isinstance(statement, VarAssignment):
+            ctx[statement.name] = self.expr_assignment(statement, ctx, function_ctx)
+        elif isinstance(statement, VarDef):
+            if ctx.is_it_in(statement.name):
+                error_message(f'Var "{statement.name}" have been define.')
+            ctx[statement.name] = None  # Create the new variable
+        elif isinstance(statement, Call):
+            self.expr_call(statement, ctx, function_ctx)  # Call the functions.
+        elif isinstance(statement, ReturnStatement):
+            return self.expr(statement.val, ctx, function_ctx)  # Return it to the top.
+        elif isinstance(statement, Compare):
+            return self.expr_compare(
+                statement, ctx, function_ctx
+            )  # Return the result to the top.
+        elif isinstance(statement, IfStatement):
+            self.expr_if(statement, ctx, function_ctx)
+        elif isinstance(statement, RaiseStatement):
+            self.expr_raise(statement, ctx, function_ctx)
 
     def expr_compare(self, compare: Compare, ctx: CTX, function_ctx: FunctionCTX):
         return compare.compare(ctx, function_ctx, self.expr)
