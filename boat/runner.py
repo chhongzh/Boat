@@ -10,6 +10,7 @@ from .type import BUILTINS
 from .statement import *
 from .lib_runner import *
 from .stdlib.builtin import _print, _input, _toint
+from .errors import *
 
 
 class Runner(object):
@@ -61,6 +62,8 @@ class Runner(object):
                 )  # Return the result to the top.
             elif isinstance(statement, IfStatement):
                 self.expr_if(statement, ctx, function_ctx)
+            elif isinstance(statement, RaiseStatement):
+                self.expr_raise(statement, ctx, function_ctx)
 
         return None  # For the non return function
 
@@ -74,9 +77,9 @@ class Runner(object):
         # To express the expression
         if isinstance(statement, Var):
             if not ctx.is_it_in(statement.var):
-                error_message(
+                NotDefineError(
                     f'Var "{statement.var}" not define.'
-                )  # [ERROR] Not define
+                ).raise_it()  # [ERROR] Not define
             return ctx[statement.var]
         elif isinstance(statement, BinOp):
             val = statement.calc(ctx, function_ctx, self.expr)
@@ -88,6 +91,15 @@ class Runner(object):
             return statement.compare(ctx, function_ctx, self.expr)
         else:
             return statement
+
+    def expr_raise(
+        self, statement: RaiseStatement, ctx: CTX, function_ctx: FunctionCTX
+    ):
+        global ERRORS_MAP
+        statement.expection: str
+        ERRORS_MAP[statement.expection](
+            *self.expr_args(statement.args, ctx, function_ctx)
+        ).raise_it()
 
     def expr_if(self, statement: IfStatement, ctx: CTX, function_ctx: FunctionCTX):
         tests = statement.tests
@@ -113,7 +125,7 @@ class Runner(object):
         self, statement: VarAssignment, ctx: CTX, function_ctx: FunctionCTX
     ):
         if not ctx.is_it_in(statement.name):
-            error_message(f'Var "{statement.name}" not define.')
+            NotDefineError(f'Var "{statement.name}" not define.').raise_it()
         else:
             val = self.expr(statement.var, ctx, function_ctx)
             # ctx.setitem(statement.name, val)
@@ -123,6 +135,7 @@ class Runner(object):
         return compare.compare(ctx, function_ctx, self.expr)
 
     def expr_args(self, args, ctx: CTX, function_ctx: FunctionCTX):
+        args = list(args)
         for arg_index in range(len(args)):
             args[arg_index] = self.expr(args[arg_index], ctx, function_ctx)
         return args

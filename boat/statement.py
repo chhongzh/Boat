@@ -95,6 +95,12 @@ class ReturnStatement(object):
         self.val = val
 
 
+class RaiseStatement(object):
+    def __init__(self, expection, *args):
+        self.expection = expection
+        self.args = args
+
+
 class WhileStatement(object):
     def __init__(self, test: Compare, body: list):
         self.test = test

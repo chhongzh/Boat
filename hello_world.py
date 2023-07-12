@@ -10,8 +10,10 @@ from boat.statement import (
     Compare,
     WhileStatement,
     IfStatement,
+    RaiseStatement,
 )
 from boat import Runner
+from boat.errors import Error
 from boat.type import (
     NE,
     PLUS,
