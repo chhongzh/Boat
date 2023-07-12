@@ -11,6 +11,10 @@ class BaseError(object):
         )
 
 
+class ErrorException(Exception):
+    pass
+
+
 class Error(BaseError):
     pass
 
@@ -24,6 +28,10 @@ class RunError(SystemError):
 
 
 class ExpressError(SystemError):
+    pass
+
+
+class NotDefineError(SystemError):
     pass
 
 

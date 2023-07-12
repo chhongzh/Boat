@@ -9,7 +9,7 @@ MIT License
 from .type import BUILTINS
 from .statement import *
 from .lib_runner import *
-from .stdlib.builtin import _print, _input, _toint
+from .stdlib.builtin import _print, _input, _toint, _tostr, _tofloat
 from .errors import *
 
 
@@ -29,7 +29,9 @@ class Runner(object):
         self.ctx = CTX()  # Init variable context.
         self.function_ctx = FunctionCTX()  # Init function context.
 
-    def run_statements(self, statements, ctx: CTX, function_ctx: FunctionCTX):
+    def run_statements(
+        self, statements, ctx: CTX, function_ctx: FunctionCTX, catches=[]
+    ):
         """
         Run some statements.
         Args:
@@ -37,7 +39,7 @@ class Runner(object):
         """
 
         for statement in statements:
-            self.run_statement(statement, ctx, function_ctx)
+            self.run_statement(statement, ctx, function_ctx, catches)
 
         return None  # For the non return function
 
@@ -105,7 +107,9 @@ class Runner(object):
             # ctx.setitem(statement.name, val)
             return val
 
-    def run_statement(self, statement, ctx: CTX, function_ctx: FunctionCTX):
+    def run_statement(
+        self, statement, ctx: CTX, function_ctx: FunctionCTX, catches: list
+    ):
         if isinstance(statement, FunctionDef):
             function_ctx.new_function(statement)  # Add the function to the context.
         elif isinstance(statement, WhileStatement):
@@ -130,7 +134,28 @@ class Runner(object):
         elif isinstance(statement, IfStatement):
             self.expr_if(statement, ctx, function_ctx)
         elif isinstance(statement, RaiseStatement):
-            self.expr_raise(statement, ctx, function_ctx)
+            self.expr_raise_catch(statement, ctx, function_ctx, catches)
+
+        elif isinstance(statement, TryCatch):
+            body1 = statement.bodys1
+            body2 = statement.bodys2
+            errors = statement.catchs
+
+            try:
+                self.run_statements(body1, ctx, function_ctx, errors)
+            except ErrorException as E:
+                self.run_statements(body2, ctx, function_ctx, [])
+
+    def expr_raise_catch(
+        self,
+        statement: RaiseStatement,
+        ctx: CTX,
+        function_ctx: FunctionCTX,
+        catches: list,
+    ):
+        if statement.expection in catches:
+            raise ErrorException([statement.expection, statement.args])
+        self.expr_raise(statement, ctx, function_ctx)
 
     def expr_compare(self, compare: Compare, ctx: CTX, function_ctx: FunctionCTX):
         return compare.compare(ctx, function_ctx, self.expr)
@@ -153,6 +178,10 @@ class Runner(object):
                 )  # Hook for the built in functions
             elif statement.name == "toint":
                 return _toint(*self.expr_args(statement.args, ctx, function_ctx))
+            elif statement.name == "tostr":
+                return _tostr(*self.expr_args(statement.args, ctx, function_ctx))
+            elif statement.name == "tofloat":
+                return _tofloat(*self.expr_args(statement.args, ctx, function_ctx))
         elif function_ctx.is_it_in(statement.name):  # Check the function in the define.
             statement: Call
             function_ctx: list[FunctionDef]

@@ -101,6 +101,13 @@ class RaiseStatement(object):
         self.args = args
 
 
+class TryCatch(object):
+    def __init__(self, bodys1: list, catchs: list[str], bodys2):
+        self.bodys1 = bodys1
+        self.catchs = catchs
+        self.bodys2 = bodys2
+
+
 class WhileStatement(object):
     def __init__(self, test: Compare, body: list):
         self.test = test

@@ -11,6 +11,7 @@ from boat.statement import (
     WhileStatement,
     IfStatement,
     RaiseStatement,
+    TryCatch,
 )
 from boat import Runner
 from boat.errors import Error
@@ -30,5 +31,9 @@ from boat.type import (
 
 
 # Example "Hello World!"
-CODE = Module([Call("print", ["Running on Boat AST!"])])
+CODE = Module(
+    [
+        Call("print", ["Running on Boat AST!"]),
+    ]
+)
 Runner(CODE).run()
