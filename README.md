@@ -7,5 +7,12 @@ Enjoy it!
 
 If you want to try more examples, [go this file](examples/README.md)
 
+## Download & Use
+Go this [page](https://github.com/chhongzh/Boat/releases).Last version is `0.0a1`
+
+If there is not whl file for your system. You can build it by yourself.
+
+Run `setup.py` to build.
+
 # License
 [MIT](LICENSE)
