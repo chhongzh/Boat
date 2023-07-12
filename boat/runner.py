@@ -162,10 +162,3 @@ class Runner(object):
             )  # Need get value so return it.
         else:
             error_message(f'Function "{statement.name}" not define.')
-
-
-if __name__ == "__main__":
-    from test import CODE
-
-    r = Runner(CODE)
-    r.run()
