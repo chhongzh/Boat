@@ -6,10 +6,10 @@ Copyright 2023 chhongzh
 MIT License
 """
 
-from boat.type import BUILTINS
-from boat.statement import *
-from boat.lib_runner import *
-from stdlib.builtin import _print, _input, _toint
+from .type import BUILTINS
+from .statement import *
+from .lib_runner import *
+from .stdlib.builtin import _print, _input, _toint
 
 
 class Runner(object):

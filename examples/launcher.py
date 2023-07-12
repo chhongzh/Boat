@@ -1,7 +1,7 @@
 import os, importlib, sys
 
 sys.path.append("..")
-import runner
+from boat.runner import Runner
 
 
 print("Welcome Boat AST examples!")
@@ -34,7 +34,7 @@ CODE = importlib.import_module(f"examples.{folder_name}.code").CODE
 print("--- Start Run! ---")
 print()
 
-r = runner.Runner(CODE)
+r = Runner(CODE)
 r.run()
 
 print()

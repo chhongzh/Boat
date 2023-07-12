@@ -1,6 +1,6 @@
 import copy
-from boat.type import *
-from boat.lib_runner import CTX, FunctionCTX, debug_message
+from .type import *
+from .lib_runner import CTX, FunctionCTX, debug_message
 
 
 class Module(object):
