@@ -1,7 +1,7 @@
 from setuptools import setup
 import sys
 
-sys.argv = [__file__, "sdist", "bdist", "bdist_wheel"]  # Replace the args
+sys.argv = [__file__, "bdist_wheel"]  # Replace the args
 
 print("--- 开始构建! ---")
 setup(
