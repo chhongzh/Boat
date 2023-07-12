@@ -6,7 +6,7 @@ ObjFloat = float
 
 PLUS, SUBTRACT, MULTIPLY, DIVIDE = (1, 2, 3, 4)
 
-BUILTINS = ["print", "input", "toint"]
+BUILTINS = ["print", "input", "toint", "tofloat", "tostr"]
 
 LT, LE, EQ, NE, GE, GT = (5, 6, 7, 8, 9, 10)
 

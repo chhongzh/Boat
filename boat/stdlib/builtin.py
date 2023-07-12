@@ -12,6 +12,18 @@ def _input(*args):
 
 
 def _toint(a: str):
-    if not a.isdigit():
+    try:
+        return int(a)
+    except TypeError:
         error_message("Invalid number.")
-    return int(a)
+
+
+def _tostr(a):
+    return str(a)
+
+
+def _tofloat(a):
+    try:
+        return float(a)
+    except:
+        error_message("Invalid number.")
